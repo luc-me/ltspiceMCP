@@ -1,0 +1,25 @@
+* Filtro Pasa Bajos Orden 3 (Cascada con Buffers) - fc = 1kHz
+
+* --- Entrada ---
+V1 Vin 0 AC 1
+
+* --- Etapa 1 ---
+R1 Vin N1 1.5915k
+C1 N1 0 100n
+* Buffer Ideal 1 (Entrada: N1, Salida: N1_Buff)
+E1 N1_Buff 0 N1 0 1
+
+* --- Etapa 2 ---
+R2 N1_Buff N2 1.5915k
+C2 N2 0 100n
+* Buffer Ideal 2 (Entrada: N2, Salida: N2_Buff)
+E2 N2_Buff 0 N2 0 1
+
+* --- Etapa 3 ---
+R3 N2_Buff Vout 1.5915k
+C3 Vout 0 100n
+
+* --- Analisis ---
+.ac dec 100 10 100k
+
+.end

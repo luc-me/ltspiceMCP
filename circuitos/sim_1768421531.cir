@@ -1,0 +1,17 @@
+* Filtro Pasa Bajos RC - fc = 1kHz
+* Entrada: Vin, Salida: Vout
+
+* Fuente de voltaje AC (1V para facilitar la lectura de ganancia en dB)
+V1 Vin 0 AC 1
+
+* Resistencia de 1.5915 kOhms
+R1 Vin Vout 1.5915k
+
+* Condensador de 100 nF
+C1 Vout 0 100n
+
+* Analisis AC: Barrido por decada, 100 puntos por decada, de 10Hz a 100kHz
+.ac dec 100 10 100k
+
+* Fin del circuito
+.end

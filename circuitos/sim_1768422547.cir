@@ -1,0 +1,12 @@
+* Amplificador Inversor Ganancia -20
+V1 Vin 0 SIN(0 0.5 1k)
+V2 VCC 0 15
+V3 VEE 0 -15
+R1 Vin N_INV 1k
+R2 N_INV Vout 20k
+* Pinout LT1001: +IN -IN V+ V- OUT
+XU1 0 N_INV VCC VEE Vout LT1001
+.tran 3ms
+.lib LTC.lib
+.backanno
+.end
