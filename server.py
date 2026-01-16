@@ -59,7 +59,7 @@ def gestionar_simulacion_ltspice(netlist_content: str, nombre_proyecto: str) -> 
         return f"Error al simular: {e}"
 
     try:
-        os.startfile(archivo_cir)
+        subprocess.Popen([LTSPICE_EXE, archivo_cir])
         return f"Simulación exitosa. Guardado en: '{nombre_seguro}'"
     except Exception as e:
         return f"Simulado OK, pero falló al abrir: {e}"
