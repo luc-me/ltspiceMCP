@@ -174,39 +174,37 @@ def check_gemini_cli():
     return False
 
 def update_server_config(ltspice_path, lib_path):
-    """Actualiza las rutas en server.py"""
+    """Actualiza la configuración en el archivo .env"""
     if not ltspice_path and not lib_path:
         return
     
-    print_info("\nActualizando configuración en server.py...")
+    print_info("\nActualizando configuración en .env...")
     
-    server_file = Path(__file__).parent / "server.py"
-    if not server_file.exists():
-        print_error("server.py no encontrado")
-        return
+    env_file = Path(__file__).parent / ".env"
+    env_vars = {}
+    
+    if env_file.exists():
+        with open(env_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, val = line.split('=', 1)
+                    env_vars[key.strip()] = val.strip()
+    
+    if ltspice_path:
+        env_vars['LTSPICE_EXE'] = ltspice_path
+    if lib_path:
+        env_vars['LTSPICE_LIB'] = lib_path
+    if 'LTSPICE_TIMEOUT' not in env_vars:
+        env_vars['LTSPICE_TIMEOUT'] = "120"
     
     try:
-        with open(server_file, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        if ltspice_path:
-            # Reemplazar ruta de LTspice
-            old_line = 'LTSPICE_EXE = r"C:\Users\menda\AppData\Local\Programs\ADI\LTspice\LTspice.exe"'
-            new_line = f'LTSPICE_EXE = r"{ltspice_path}"'
-            content = content.replace(old_line, new_line)
-        
-        if lib_path:
-            # Reemplazar ruta de biblioteca
-            old_line = 'LTSPICE_LIB_PATH = os.path.expanduser(r"~\Documents\LTspice\lib")'
-            new_line = f'LTSPICE_LIB_PATH = r"{lib_path}"'
-            content = content.replace(old_line, new_line)
-        
-        with open(server_file, 'w', encoding='utf-8') as f:
-            f.write(content)
-        
-        print_success("server.py actualizado")
+        with open(env_file, 'w', encoding='utf-8') as f:
+            for k, v in env_vars.items():
+                f.write(f'{k}={v}\n')
+        print_success(".env actualizado")
     except Exception as e:
-        print_error(f"Error actualizando server.py: {e}")
+        print_error(f"Error actualizando .env: {e}")
 
 def show_gemini_config():
     """Muestra las instrucciones para configurar Gemini CLI"""

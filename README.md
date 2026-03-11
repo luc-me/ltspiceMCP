@@ -112,19 +112,18 @@ La IA automáticamente:
 
 ## 🔧 Configuración
 
-### Ruta Personalizada de LTspice
+### Archivo .env
 
-Si LTspice está en otra ubicación, editar en `server.py`:
+Puedes crear un archivo `.env` en la raíz del proyecto para personalizar rutas de la instalación local y límites de tiempo.
+Al ejecutar `install.py`, este archivo se generará automáticamente, pero puedes editarlo manualmente:
 
-```python
-LTSPICE_EXE = r"C:\Tu\Ruta\LTspice.exe"
+```env
+LTSPICE_EXE=C:\Tu\Ruta\LTspice.exe
+LTSPICE_LIB=C:\Tu\Ruta\Documents\LTspice\lib
+LTSPICE_TIMEOUT=120
 ```
 
-### Ruta Personalizada de Biblioteca
-
-```python
-LTSPICE_LIB_PATH = os.path.expanduser(r"~\Tu\Ruta\lib")
-```
+- **LTSPICE_TIMEOUT**: Limita el tiempo máximo (en segundos) que LTspice intentará resolver el circuito en casos de mala convergencia extrema para evitar bloqueos del Agente.
 
 ---
 

@@ -4,8 +4,10 @@ import time
 import glob
 from fastmcp import FastMCP
 
+
 LTSPICE_EXE = r"C:\Users\menda\AppData\Local\Programs\ADI\LTspice\LTspice.exe"
-LTSPICE_LIB = os.path.expanduser(r"~\Documents\LTspice\lib")
+LTSPICE_LIB = r"C:\Users\menda\OneDrive\Documentos\LTspice\lib"
+
 
 mcp = FastMCP("LTspice-Server")
 
@@ -23,8 +25,15 @@ def analizar_errores_log(ruta_log):
         errores.append("Nodo flotante")
     if "Unknown subcircuit" in contenido: 
         errores.append("Componente desconocido")
+        
+    for linea in contenido.split('\n'):
+        if "Fatal Error:" in linea:
+            errores.append(f"Error fatal: {linea.replace('Fatal Error:', '').strip()}")
     
     return f"FALLO: {', '.join(errores)}" if errores else None
+
+
+LTSPICE_TIMEOUT = 120
 
 @mcp.tool()
 def gestionar_simulacion_ltspice(netlist_content: str, nombre_proyecto: str) -> str:
@@ -48,7 +57,10 @@ def gestionar_simulacion_ltspice(netlist_content: str, nombre_proyecto: str) -> 
 
     try:
         if os.path.exists(LTSPICE_EXE):
-            subprocess.run([LTSPICE_EXE, "-b", archivo_cir], check=True)
+            try:
+                subprocess.run([LTSPICE_EXE, "-b", archivo_cir], check=True, timeout=LTSPICE_TIMEOUT)
+            except subprocess.TimeoutExpired:
+                return f"FALLO: La simulación excedió el tiempo límite de {LTSPICE_TIMEOUT}s. Relaja las tolerancias (.options abstol) o revisa el diseño."
             
             error = analizar_errores_log(archivo_log)
             if error:
@@ -98,7 +110,7 @@ def buscar_componente_en_libreria(nombre: str) -> str:
 
     if resultados: 
         return "\n".join(resultados[:15])
-    return f"No encontré '{nombre}'. Usa un modelo genérico."
+    return f"No encontré '{nombre}'. detente y pregúntale al usuario si desea: 1) Utilizar un modelo ideal de LTspice, 2) Adaptar un modelo ideal a uno real, o 3) Buscar otro modelo similar"
 
 if __name__ == "__main__":
     mcp.run()
