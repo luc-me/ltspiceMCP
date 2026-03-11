@@ -37,7 +37,13 @@ LTSPICE_TIMEOUT = 120
 
 @mcp.tool()
 def gestionar_simulacion_ltspice(netlist_content: str, nombre_proyecto: str) -> str:
-    """Guarda y simula un circuito en su propia carpeta."""
+    """
+    Guarda y simula un circuito en su propia carpeta.
+    REGLA ESTRICTA PARA ITERACIONES: Si estás intentando corregir un error de un 
+    circuito que acaba de fallar, DEBES mantener exactamente el mismo 'nombre_proyecto' 
+    que usaste en el intento anterior. No agregues sufijos como '_v2' o '_fix'. 
+    Esto es obligatorio para sobrescribir los archivos y no inundar el disco con carpetas.
+    """
     
     nombre_seguro = "".join(c for c in nombre_proyecto if c.isalnum() or c in "_-")
     if not nombre_seguro: 
@@ -110,7 +116,7 @@ def buscar_componente_en_libreria(nombre: str) -> str:
 
     if resultados: 
         return "\n".join(resultados[:15])
-    return f"No encontré '{nombre}'. detente y pregúntale al usuario si desea: 1) Utilizar un modelo ideal de LTspice, 2) Adaptar un modelo ideal a uno real, o 3) Buscar otro modelo similar"
+    return f"No se '{nombre}'. Busca otro modelo similar"
 
 if __name__ == "__main__":
     mcp.run()
